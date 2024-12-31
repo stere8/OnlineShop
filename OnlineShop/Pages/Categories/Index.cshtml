@@ -1,0 +1,29 @@
+﻿@page
+@model OnlineShop.Pages.Categories.IndexModel
+@{
+    ViewData["Title"] = "Category List";
+}
+
+<h2>Category List</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Number</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var category in Model.Categories)
+        {
+            <tr>
+                <td>
+                    <a asp-page="/Products/SearchResult" asp-route-categoryId="@category.CategoryId">
+                        @category.Name
+                    </a>
+                </td>
+                <td>@category.Products.Count</td>
+            </tr>
+        }
+    </tbody>
+</table>

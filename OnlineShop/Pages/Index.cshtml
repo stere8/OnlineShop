@@ -1,0 +1,53 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Welcome to CJ's Corner Store!";
+}
+
+<div class="container mt-5 text-center">
+    <div class="jumbotron bg-light py-5 shadow-lg">
+        <h1 class="display-3">Welcome to CJ's Corner Store!</h1>
+        <p class="lead">Where quality meets affordability. Discover everything you need, all in one place!</p>
+        <hr class="my-4">
+        <p>Browse through our diverse collection of products and enjoy a seamless shopping experience.</p>
+        <a class="btn btn-success btn-lg mt-3" href="/Products" role="button">Shop Now</a>
+        <a class="btn btn-outline-secondary btn-lg mt-3" href="/Contact" role="button">Contact Us</a>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Electronics">
+                <div class="card-body">
+                    <h5 class="card-title">Electronics</h5>
+                    <p class="card-text">Explore cutting-edge gadgets and tech essentials.</p>
+                    <a href="/Category/Electronics" class="btn btn-primary">Explore Electronics</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Fashion">
+                <div class="card-body">
+                    <h5 class="card-title">Fashion</h5>
+                    <p class="card-text">Step into style with our latest fashion collection.</p>
+                    <a href="/Category/Fashion" class="btn btn-primary">Explore Fashion</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Home Essentials">
+                <div class="card-body">
+                    <h5 class="card-title">Home Essentials</h5>
+                    <p class="card-text">Upgrade your home with our premium essentials.</p>
+                    <a href="/Category/HomeEssentials" class="btn btn-primary">Explore Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <p class="text-muted">© 2024 CJ's Corner Store | All Rights Reserved</p>
+    </div>
+</div>

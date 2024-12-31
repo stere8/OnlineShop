@@ -1,0 +1,28 @@
+﻿@page "{id:int}"
+@model OnlineShop.Pages.Products.ViewModel
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<h2>Product Details</h2>
+
+@if (Model.Product != null)
+{
+    <div class="product-card">
+        <img src="~/images/@Model.Product.ImageUrl" alt="@Model.Product.Name" />
+        <div class="card-body">
+            <h5 class="card-title">@Model.Product.Name</h5>
+            <p class="card-text">@Model.Product.Description</p>
+            <p>
+                <strong>Price:</strong> @Model.Product.Price.ToString("C")<br />
+                <strong>Stock:</strong> @Model.Product.StockQuantity<br />
+                <strong>Category:</strong> @Model.Product.Category.Name
+            </p>
+        </div>
+    </div>
+}
+else
+{
+    <p class="text-danger">Product not found.</p>
+}
+<a asp-page="./Index" class="btn btn-primary mt-3">Back to Products</a>
