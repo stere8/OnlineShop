@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OnlineShop.Models;
 using OnlineShop.Services;
 
@@ -15,6 +16,8 @@ namespace OnlineShop.Pages.Products
         public Product Product { get; set; }
         public SelectList Categories { get; set; }
         public int? ProductId { get; set; }
+        [BindProperty]
+        public string currentProductUrl { get; set; }
 
         public AddEditProductModel(IProductService productService, ICategoryService categoryService)
         {
@@ -32,6 +35,8 @@ namespace OnlineShop.Pages.Products
             if (id.HasValue)
             {
                 Product = await _productService.GetProductByIdAsync(id.Value);
+                currentProductUrl = Product.ImageUrl;
+
                 if (Product == null)
                 {
                     return NotFound();
@@ -46,8 +51,13 @@ namespace OnlineShop.Pages.Products
         }
 
         public async Task<IActionResult> OnPostAsync(IFormFile ImageFile)
-        {
-            if (!ModelState.IsValid)
+        { 
+            if (Product.ProductId == 0)
+            {
+                ModelState.Remove(nameof(currentProductUrl));
+            }
+
+            if (!ModelState.IsValid && ImageFile != null)
             {
                 var categories = await _categoryService.GetAllCategoriesAsync();
                 Categories = new SelectList(categories, "CategoryId", "Name");
@@ -68,6 +78,11 @@ namespace OnlineShop.Pages.Products
                 {
                     Product.ImageUrl = await SaveImageAsync(ImageFile);
                 }
+                else
+                {
+                    Product.ImageUrl = currentProductUrl;
+                }
+                
                 await _productService.UpdateProductAsync(Product);
             }
 
@@ -79,14 +94,21 @@ namespace OnlineShop.Pages.Products
             if (Product.ProductId != 0)
             {
                 await _productService.DeleteProductAsync(Product.ProductId);
+                DeleteImage(currentProductUrl);
             }
             return RedirectToPage("./Index");
         }
 
-        private async Task<string> SaveImageAsync(IFormFile imageFile)
+        private async Task<string> GetUploadsFolder()
         {
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
             Directory.CreateDirectory(uploadsFolder); // Ensure the folder exists
+            return uploadsFolder;
+        }
+
+        private async Task<string> SaveImageAsync(IFormFile imageFile)
+        {
+            var uploadsFolder = GetUploadsFolder().Result;            
 
             var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -97,6 +119,13 @@ namespace OnlineShop.Pages.Products
             }
 
             return uniqueFileName; // Return the relative path for display
+        }
+
+        private async Task DeleteImage(string filename)
+        {
+            var uploadsFolder = GetUploadsFolder().Result;
+            var filePath = Path.Combine(uploadsFolder, filename);
+            System.IO.File.Delete(filePath);
         }
     }
 }

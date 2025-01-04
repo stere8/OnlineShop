@@ -73,4 +73,66 @@ body {
 
 .search-form button {
     white-space: nowrap; /* Prevents the button text from wrapping */
+
+    .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
+
+.product-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-actions {
+    margin-top: 2rem;
+}
+
+.current-image {
+    margin: 1rem 0;
+}
+
+.current-image img {
+    max-width: 200px;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.product-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-actions {
+    margin-top: 2rem;
+}
+
+.current-image {
+    margin: 1rem 0;
+}
+
+    .current-image img {
+        max-width: 200px;
+        height: auto;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+    }

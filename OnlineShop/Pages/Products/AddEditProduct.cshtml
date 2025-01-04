@@ -39,6 +39,7 @@
             <label asp-for="Product.StockQuantity">Stock Quantity</label>
             <input asp-for="Product.StockQuantity" class="form-control" type="number" required />
         </div>
+        <input asp-for="currentProductUrl" type="hidden" value="@Model.Product.ImageUrl"/>
 
         <div class="form-group">
             <label>Product Image</label>
@@ -47,7 +48,7 @@
             {
                 <div class="current-image mt-2">
                     <p>Current image:</p>
-                    <img src="@Model.Product.ImageUrl" alt="@Model.Product.Name" style="max-width: 200px;" />
+                    <img src="/images/@Model.Product.ImageUrl" alt="@Model.Product.Name" style="max-width: 200px;" />
                 </div>
             }
         </div>
