@@ -17,7 +17,12 @@ namespace OnlineShop.Pages.Categories
 
         public async Task OnGetAsync()
         {
-            Categories = (await _categoryService.GetAllCategoriesAsync()).ToList();
+            var allCategories = await _categoryService.GetAllCategoriesAsync();
+
+            Categories = allCategories
+                .OrderBy(c => c.CategoryId == 8 ? 1 : 0) // This puts ID 8 last
+                .ThenBy(c => c.Name)
+                .ToList();
         }
     }
 }
