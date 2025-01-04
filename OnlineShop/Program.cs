@@ -22,7 +22,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
-});
+})
+.AddEntityFrameworkStores<OnlineShopDbContext>()
+.AddDefaultTokenProviders(); ;
 
 var app = builder.Build();
 
