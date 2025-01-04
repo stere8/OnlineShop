@@ -1,9 +1,13 @@
-﻿namespace OnlineShop.Models
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace OnlineShop.Models
 {
     public class Category
     {
         public int CategoryId { get; set; }
         public string Name { get; set; }
+
+        [ValidateNever]  // Prevent validation on Products collection
         public ICollection<Product> Products { get; set; }
     }
 }

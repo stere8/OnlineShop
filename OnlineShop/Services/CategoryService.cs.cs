@@ -37,6 +37,11 @@ namespace OnlineShop.Services
 
         public async Task DeleteCategoryAsync(int id)
         {
+            if(id == 8)
+            {
+                return;
+            }
+
             var category = await _context.Categories.FindAsync(id);
             if (category != null)
             {
