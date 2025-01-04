@@ -15,11 +15,11 @@ namespace OnlineShop.Pages.Products
         [BindProperty]
         public Product Product { get; set; }
         public SelectList Categories { get; set; }
-        public int? ProductId { get; set; }
+        required public int? ProductId { get; set; }
         [BindProperty]
         public string currentProductUrl { get; set; }
 
-        public AddEditProductModel(IProductService productService, ICategoryService categoryService)
+        public AddEditProductModel(ICategoryService categoryService, IProductService productService)
         {
             _productService = productService;
             _categoryService = categoryService;

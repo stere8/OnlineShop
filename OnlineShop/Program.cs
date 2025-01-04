@@ -1,6 +1,8 @@
 using OnlineShop.Data;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Services;
+using Microsoft.AspNetCore.Identity;
+using OnlineShop.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,15 @@ builder.Services.AddDbContext<OnlineShopDbContext>(options =>
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+});
 
 var app = builder.Build();
 
@@ -31,5 +42,11 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await DbInitializer.Initialize(services);
+}
 
 app.Run();
