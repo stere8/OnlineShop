@@ -18,7 +18,7 @@ namespace OnlineShop.Pages.Account
         }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        public SignupInputModel Input { get; set; }
 
         public void OnGet()
         {

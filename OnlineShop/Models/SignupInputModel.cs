@@ -2,7 +2,7 @@
 
 namespace OnlineShop.Models
 {
-    public class InputModel
+    public class SignupInputModel
     {
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
