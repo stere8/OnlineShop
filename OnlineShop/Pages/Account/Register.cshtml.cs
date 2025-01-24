@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineShop.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace OnlineShop.Pages.Account
 {
@@ -20,8 +19,15 @@ namespace OnlineShop.Pages.Account
         [BindProperty]
         public SignupInputModel Input { get; set; }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            if (_signInManager.IsSignedIn(User))
+            {
+                return RedirectToPage("/Index");
+            }
+
+            return Page();
+
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -36,18 +42,21 @@ namespace OnlineShop.Pages.Account
                     LastName = Input.LastName,
                     Address = Input.Address
                 };
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToPage("/Index");
+                    return LocalRedirect("~/");
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-            // If we got this far, something failed, redisplay form
+
             return Page();
         }
     }

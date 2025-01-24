@@ -5,9 +5,12 @@
 }
 
 <h2>Product List</h2>
-<a asp-page="/Products/AddEditProduct" class="btn btn-success">
-    <span class="bi bi-plus"></span> Add Products
-</a>
+@if (User.IsInRole("Admin"))
+{
+    <a asp-page="/Products/AddEditProduct" class="btn btn-success">
+        <span class="bi bi-plus"></span> Add Products
+    </a>
+}
 @if (Model.Products.Any())
 {
     <div class="product-grid">

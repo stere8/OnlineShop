@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OnlineShop.Models;
@@ -5,6 +6,7 @@ using OnlineShop.Services;
 
 namespace OnlineShop.Pages.Categories
 {
+    [Authorize(Roles ="Admin")]
     public class AddEditCategoryModel : PageModel
     {
 

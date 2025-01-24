@@ -7,9 +7,12 @@
 <h2>Category List</h2>
 
 <div class="mb-3">
-    <a asp-page="/Categories/AddEditCategory" class="btn btn-success">
-        <span class="bi bi-plus"></span> Add Category
-    </a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-page="/Categories/AddEditCategory" class="btn btn-success">
+            <span class="bi bi-plus"></span> Add Category
+        </a>
+    }
 </div>
 
 <table class="table">
@@ -17,7 +20,10 @@
         <tr>
             <th>Name</th>
             <th>Number</th>
-            <th>Actions</th> <!-- Add a column for actions (Edit button) -->
+            @if (User.IsInRole("Admin"))
+            {
+                <th>Actions</th> <!-- Add a column for actions (Edit button) -->
+            }
         </tr>
     </thead>
     <tbody>
@@ -30,18 +36,22 @@
                     </a>
                 </td>
                 <td>@category.Products.Count</td>
-                <td>
-                    @if (category.CategoryId != 8)
-                    {
-                        <a asp-page="/Categories/AddEditCategory" asp-route-categoryId="@category.CategoryId" class="btn btn-warning">
-                            Edit
-                        </a>
-                    }
-                    else
-                    {
-                        <button class="btn btn-warning" disabled> Edit </button> <!-- Disabled Edit button for CategoryId 8 -->
-                    }
-                </td>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        @if (category.CategoryId != 8)
+                        {
+                            <a asp-page="/Categories/AddEditCategory" asp-route-categoryId="@category.CategoryId" class="btn btn-warning">
+                                Edit
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-warning" disabled> Edit </button> <!-- Disabled Edit button for CategoryId 8 -->
+                        }
+                    </td>
+                }
             </tr>
         }
     </tbody>

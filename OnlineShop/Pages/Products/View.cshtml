@@ -22,7 +22,10 @@
     </div>
 
     <div class="form-actions mt-4">
-        <a asp-page="./AddEditProduct" asp-route-id="@Model.Product.ProductId" class="btn btn-primary">Edit</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-page="./AddEditProduct" asp-route-id="@Model.Product.ProductId" class="btn btn-primary">Edit</a>
+        }
         <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
     </div>
 }

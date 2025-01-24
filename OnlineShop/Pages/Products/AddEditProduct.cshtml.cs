@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -7,6 +8,7 @@ using OnlineShop.Services;
 
 namespace OnlineShop.Pages.Products
 {
+    [Authorize(Roles = "Admin")]
     public class AddEditProductModel : PageModel
     {
         private readonly IProductService _productService;
