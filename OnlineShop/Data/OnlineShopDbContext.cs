@@ -27,7 +27,8 @@ namespace OnlineShop.Data
                 new Category { CategoryId = 2, Name = "Clothing" },
                 new Category { CategoryId = 3, Name = "Home Appliances" },
                 new Category { CategoryId = 4, Name = "Books" },
-                new Category { CategoryId = 5, Name = "Toys" }
+                new Category { CategoryId = 5, Name = "Toys" },
+                new Category { CategoryId = 8, Name = "Unknown" }  // Add this line
             );
 
             modelBuilder.Entity<Product>().HasData(

@@ -67,14 +67,16 @@ body {
     gap: 10px; /* Adjust spacing between elements */
 }
 
-.search-form .form-group {
-    flex: 1; /* Ensures equal width for input and dropdown */
-}
+    .search-form .form-group {
+        flex: 1; /* Ensures equal width for input and dropdown */
+    }
 
-.search-form button {
-    white-space: nowrap; /* Prevents the button text from wrapping */
+    .search-form button {
+        white-space: nowrap; /* Prevents the button text from wrapping */
 
-    .button-group {
+        .button-group
+
+{
     display: flex;
     gap: 10px;
     margin-top: 10px;
@@ -98,13 +100,14 @@ body {
     margin: 1rem 0;
 }
 
-.current-image img {
-    max-width: 200px;
-    height: auto;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px;
-}
+    .current-image img {
+        max-width: 200px;
+        height: auto;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+    }
+
 .button-group {
     display: flex;
     gap: 10px;
@@ -136,3 +139,29 @@ body {
         border-radius: 4px;
         padding: 5px;
     }
+
+
+.card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-weight: bold;
+    color: #333;
+}
+
+.btn-primary, .btn-warning {
+    margin: 0 5px;
+}

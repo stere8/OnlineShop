@@ -15,36 +15,23 @@
     </div>
 
     <div class="row mt-5">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Electronics">
-                <div class="card-body">
-                    <h5 class="card-title">Electronics</h5>
-                    <p class="card-text">Explore cutting-edge gadgets and tech essentials.</p>
-                    <a href="/Category/Electronics" class="btn btn-primary">Explore Electronics</a>
+
+
+        @foreach (var category in Model.Categories.Take(3))
+        {
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <img src="@(string.IsNullOrEmpty(category.ImageUrl) ? "/images/noimage.png" : $"/images/{category.ImageUrl}")" class="card-img-top" alt="Electronics">
+                    <div class="card-body">
+                        <h5 class="card-title">@category.Name</h5>
+                        <p class="card-text">@(string.IsNullOrEmpty(category.Summary) ? "No descriptions available check out the products" : $"{category.Summary[0..150]}...")</p>
+                        <a asp-page="/Products/SearchResult" class="btn btn-primary" asp-route-categoryId="@category.CategoryId">
+                            Explore @category.Name
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Fashion">
-                <div class="card-body">
-                    <h5 class="card-title">Fashion</h5>
-                    <p class="card-text">Step into style with our latest fashion collection.</p>
-                    <a href="/Category/Fashion" class="btn btn-primary">Explore Fashion</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Home Essentials">
-                <div class="card-body">
-                    <h5 class="card-title">Home Essentials</h5>
-                    <p class="card-text">Upgrade your home with our premium essentials.</p>
-                    <a href="/Category/HomeEssentials" class="btn btn-primary">Explore Home</a>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 
     <div class="mt-5">

@@ -6,73 +6,143 @@ using OnlineShop.Services;
 
 namespace OnlineShop.Pages.Categories
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     public class AddEditCategoryModel : PageModel
     {
-
         private readonly ICategoryService _categoryService;
-        private readonly IProductService _productService;
 
         [BindProperty]
         public Category Category { get; set; }
+        public int? CategoryId { get; set; }
+        [BindProperty]
+        public string currentCategoryUrl { get; set; }
 
-        public AddEditCategoryModel(ICategoryService categoryService,IProductService productService)
+        public AddEditCategoryModel(ICategoryService categoryService)
         {
             _categoryService = categoryService;
-            _productService = productService;
         }
 
         public async Task<IActionResult> OnGetAsync(int? CategoryId)
         {
-            if ( CategoryId == null )
+            this.CategoryId = CategoryId;
+
+            if (CategoryId.HasValue)
+            {
+                Category = await _categoryService.GetCategoryByIdAsync(CategoryId.Value);
+                currentCategoryUrl = Category.ImageUrl;
+
+                if (Category == null)
+                {
+                    return NotFound();
+                }
+            }
+            else
             {
                 Category = new Category();
-                return Page();
-            }
-
-            Category = await _categoryService.GetCategoryByIdAsync(CategoryId.Value);
-
-
-            if ( Category == null)
-            {
-                return NotFound();
             }
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(IFormFile ImageFile)
         {
+            ModelState.Remove(nameof(currentCategoryUrl));
+            ModelState.Remove(nameof(ImageFile));
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-            if (Category.CategoryId == 0)
+
+            if (Category.CategoryId == 0) // Adding a new category
             {
+                if (ImageFile != null)
+                {
+                    Category.ImageUrl = await SaveImageAsync(ImageFile);
+                }
                 await _categoryService.AddCategoryAsync(Category);
             }
-            else
+            else // Editing an existing category
             {
+                if (ImageFile != null)
+                {
+                    Category.ImageUrl = await SaveImageAsync(ImageFile);
+                }
+                else
+                {
+                    Category.ImageUrl = currentCategoryUrl; // Retain existing image if no new image is provided
+                }
+
                 await _categoryService.UpdateCategoryAsync(Category);
             }
-            return RedirectToPage("/Categories/Index");
+
+            return RedirectToPage("./Index");
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync(int id)
+
+        public async Task<IActionResult> OnPostRemoveImageAsync()
         {
-            if (id == 8)
+            if (Category.CategoryId == 0)
             {
-                return RedirectToPage("/Categories/Index");
-            }
-            var productsToUpdate = await _productService.SearchProductsAsync("",id); // Assuming you have a method to get products by category
-            foreach (var product in productsToUpdate)
-            {
-                product.CategoryId = 8; // Set the CategoryId to 0 (or another placeholder value)
-                await _productService.UpdateProductAsync(product); // Update each product
+                return BadRequest("Cannot remove image for a new category.");
             }
 
-            await _categoryService.DeleteCategoryAsync(id);
-            return RedirectToPage("/Categories/Index");
+            // Get the current category
+            var category = await _categoryService.GetCategoryByIdAsync(Category.CategoryId);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            // Remove the current image
+            if (!string.IsNullOrEmpty(category.ImageUrl))
+            {
+                await DeleteImage(category.ImageUrl);
+                category.ImageUrl = null; // Clear the image URL
+                await _categoryService.UpdateCategoryAsync(category);
+            }
+
+            return RedirectToPage(new { CategoryId = category.CategoryId });
+        }
+
+
+        public async Task<IActionResult> OnPostDeleteAsync()
+        {
+            if (Category.CategoryId != 0)
+            {
+                await _categoryService.DeleteCategoryAsync(Category.CategoryId);
+                DeleteImage(currentCategoryUrl);
+            }
+            return RedirectToPage("./Index");
+        }
+
+        private async Task<string> GetUploadsFolder()
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+            Directory.CreateDirectory(uploadsFolder);
+            return uploadsFolder;
+        }
+
+        private async Task<string> SaveImageAsync(IFormFile imageFile)
+        {
+            var uploadsFolder = GetUploadsFolder().Result;
+
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+
+            return uniqueFileName;
+        }
+
+        private async Task DeleteImage(string filename)
+        {
+            var uploadsFolder = GetUploadsFolder().Result;
+            var filePath = Path.Combine(uploadsFolder, filename);
+            System.IO.File.Delete(filePath);
         }
     }
 }
