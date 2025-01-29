@@ -17,6 +17,7 @@ namespace OnlineShop.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Cart> Carts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,6 +57,21 @@ namespace OnlineShop.Data
                 new Product { ProductId = 19, Name = "Puzzle Game", Price = 25.00M, Description = "500-piece puzzle game", ImageUrl = "puzzle.jpg", StockQuantity = 60, CategoryId = 5 },
                 new Product { ProductId = 20, Name = "Toy Car", Price = 10.00M, Description = "Remote-controlled toy car", ImageUrl = "toycar.jpg", StockQuantity = 45, CategoryId = 5 }
             );
+
+            modelBuilder.Entity<Cart>()
+           .HasOne(c => c.User)
+           .WithMany()
+           .HasForeignKey(c => c.UserId);
+
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Cart)
+                .WithMany(c => c.CartItems)
+                .HasForeignKey(ci => ci.CartId);
+
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Product)
+                .WithMany()
+                .HasForeignKey(ci => ci.ProductId);
         }
 
         public override void Dispose()
