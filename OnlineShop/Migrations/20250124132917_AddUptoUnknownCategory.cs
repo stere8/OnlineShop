@@ -10,18 +10,7 @@ namespace OnlineShop.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Add ImageUrl and Summary columns
-            migrationBuilder.AddColumn<string>(
-                name: "ImageUrl",
-                table: "Categories",
-                type: "nvarchar(max)",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "Summary",
-                table: "Categories",
-                type: "nvarchar(max)",
-                nullable: true);
+          
 
             // Check if Category 8 already exists before inserting
             migrationBuilder.Sql(@"
