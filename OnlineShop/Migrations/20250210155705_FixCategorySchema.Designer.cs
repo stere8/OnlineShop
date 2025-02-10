@@ -12,15 +12,15 @@ using OnlineShop.Data;
 namespace OnlineShop.Migrations
 {
     [DbContext(typeof(OnlineShopDbContext))]
-    [Migration("20250207184617_AddBlogCreatedTimestamp")]
-    partial class AddBlogCreatedTimestamp
+    [Migration("20250210155705_FixCategorySchema")]
+    partial class FixCategorySchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -286,7 +286,7 @@ namespace OnlineShop.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItem");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Category", b =>
@@ -356,6 +356,7 @@ namespace OnlineShop.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("TotalAmount")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("OrderId");
@@ -375,6 +376,7 @@ namespace OnlineShop.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ProductId")
@@ -416,6 +418,7 @@ namespace OnlineShop.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("StockQuantity")
@@ -426,208 +429,6 @@ namespace OnlineShop.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductId = 1,
-                            CategoryId = 1,
-                            Description = "High-performance laptop",
-                            ImageUrl = "laptop.jpg",
-                            Name = "Laptop",
-                            Price = 1500.00m,
-                            StockQuantity = 10
-                        },
-                        new
-                        {
-                            ProductId = 2,
-                            CategoryId = 1,
-                            Description = "Latest smartphone with 5G",
-                            ImageUrl = "smartphone.jpg",
-                            Name = "Smartphone",
-                            Price = 800.00m,
-                            StockQuantity = 15
-                        },
-                        new
-                        {
-                            ProductId = 3,
-                            CategoryId = 1,
-                            Description = "Portable Bluetooth speaker with high-quality sound",
-                            ImageUrl = "speaker.jpg",
-                            Name = "Bluetooth Speaker",
-                            Price = 100.00m,
-                            StockQuantity = 20
-                        },
-                        new
-                        {
-                            ProductId = 4,
-                            CategoryId = 1,
-                            Description = "Waterproof smartwatch with health tracking features",
-                            ImageUrl = "smartwatch.jpg",
-                            Name = "Smartwatch",
-                            Price = 200.00m,
-                            StockQuantity = 30
-                        },
-                        new
-                        {
-                            ProductId = 5,
-                            CategoryId = 1,
-                            Description = "Noise-cancelling over-ear headphones",
-                            ImageUrl = "headphones.jpg",
-                            Name = "Headphones",
-                            Price = 75.00m,
-                            StockQuantity = 25
-                        },
-                        new
-                        {
-                            ProductId = 6,
-                            CategoryId = 2,
-                            Description = "100% cotton T-shirt",
-                            ImageUrl = "tshirt.jpg",
-                            Name = "T-shirt",
-                            Price = 20.00m,
-                            StockQuantity = 50
-                        },
-                        new
-                        {
-                            ProductId = 7,
-                            CategoryId = 2,
-                            Description = "Classic blue jeans",
-                            ImageUrl = "jeans.jpg",
-                            Name = "Jeans",
-                            Price = 45.00m,
-                            StockQuantity = 40
-                        },
-                        new
-                        {
-                            ProductId = 8,
-                            CategoryId = 2,
-                            Description = "Warm winter jacket",
-                            ImageUrl = "jacket.jpg",
-                            Name = "Jacket",
-                            Price = 100.00m,
-                            StockQuantity = 15
-                        },
-                        new
-                        {
-                            ProductId = 9,
-                            CategoryId = 2,
-                            Description = "Comfortable running shoes",
-                            ImageUrl = "sneakers.jpg",
-                            Name = "Sneakers",
-                            Price = 60.00m,
-                            StockQuantity = 35
-                        },
-                        new
-                        {
-                            ProductId = 10,
-                            CategoryId = 2,
-                            Description = "Elegant evening dress",
-                            ImageUrl = "dress.jpg",
-                            Name = "Dress",
-                            Price = 80.00m,
-                            StockQuantity = 20
-                        },
-                        new
-                        {
-                            ProductId = 11,
-                            CategoryId = 3,
-                            Description = "Compact microwave oven",
-                            ImageUrl = "microwave.jpg",
-                            Name = "Microwave Oven",
-                            Price = 150.00m,
-                            StockQuantity = 10
-                        },
-                        new
-                        {
-                            ProductId = 12,
-                            CategoryId = 3,
-                            Description = "Double-door refrigerator with smart features",
-                            ImageUrl = "refrigerator.jpg",
-                            Name = "Refrigerator",
-                            Price = 1200.00m,
-                            StockQuantity = 5
-                        },
-                        new
-                        {
-                            ProductId = 13,
-                            CategoryId = 3,
-                            Description = "Front-loading washing machine",
-                            ImageUrl = "washingmachine.jpg",
-                            Name = "Washing Machine",
-                            Price = 500.00m,
-                            StockQuantity = 8
-                        },
-                        new
-                        {
-                            ProductId = 14,
-                            CategoryId = 3,
-                            Description = "Energy-efficient air conditioner",
-                            ImageUrl = "airconditioner.jpg",
-                            Name = "Air Conditioner",
-                            Price = 400.00m,
-                            StockQuantity = 7
-                        },
-                        new
-                        {
-                            ProductId = 15,
-                            CategoryId = 3,
-                            Description = "Multi-functional kitchen blender",
-                            ImageUrl = "blender.jpg",
-                            Name = "Blender",
-                            Price = 30.00m,
-                            StockQuantity = 50
-                        },
-                        new
-                        {
-                            ProductId = 16,
-                            CategoryId = 4,
-                            Description = "Classic novel by F. Scott Fitzgerald",
-                            ImageUrl = "greatgatsby.jpg",
-                            Name = "Novel - The Great Gatsby",
-                            Price = 10.00m,
-                            StockQuantity = 100
-                        },
-                        new
-                        {
-                            ProductId = 17,
-                            CategoryId = 4,
-                            Description = "Comprehensive high school science textbook",
-                            ImageUrl = "sciencetextbook.jpg",
-                            Name = "Science Textbook",
-                            Price = 50.00m,
-                            StockQuantity = 30
-                        },
-                        new
-                        {
-                            ProductId = 18,
-                            CategoryId = 4,
-                            Description = "Illustrated story book for kids",
-                            ImageUrl = "storybook.jpg",
-                            Name = "Children's Story Book",
-                            Price = 15.00m,
-                            StockQuantity = 70
-                        },
-                        new
-                        {
-                            ProductId = 19,
-                            CategoryId = 5,
-                            Description = "500-piece puzzle game",
-                            ImageUrl = "puzzle.jpg",
-                            Name = "Puzzle Game",
-                            Price = 25.00m,
-                            StockQuantity = 60
-                        },
-                        new
-                        {
-                            ProductId = 20,
-                            CategoryId = 5,
-                            Description = "Remote-controlled toy car",
-                            ImageUrl = "toycar.jpg",
-                            Name = "Toy Car",
-                            Price = 10.00m,
-                            StockQuantity = 45
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
