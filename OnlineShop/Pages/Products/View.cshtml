@@ -9,15 +9,25 @@
 @if (Model.Product != null)
 {
     <div class="product-card">
-        <img src="~/images/@Model.Product.ImageUrl" alt="@Model.Product.Name" />
+        <img src="~/images/@Model.Product.ImageUrl" alt="@Model.Product.Name" class="product-img" />
         <div class="card-body">
-            <h5 class="card-title">@Model.Product.Name</h5>
+            <h4 class="card-title">@Model.Product.Name</h4>
             <p class="card-text">@Model.Product.Description</p>
             <p>
+                <strong>Product ID:</strong> @Model.Product.ProductId<br />
                 <strong>Price:</strong> @Model.Product.Price.ToString("C")<br />
                 <strong>Stock:</strong> @Model.Product.StockQuantity<br />
-                <strong>Category:</strong> @Model.Product.Category.Name
+                <strong>Category:</strong> @Model.Product.Category.Name<br />
             </p>
+
+            <!-- Quantity Input & Add to Cart Button -->
+            <form method="post" asp-page-handler="AddToCartWithQuantity">
+                <input type="hidden" name="productId" value="@Model.Product.ProductId" />
+                <label for="quantity">Quantity:</label>
+                <input type="number" name="quantity" id="quantity" min="1" max="@Model.Product.StockQuantity" value="1" class="form-control" required />
+                <button type="submit" class="btn btn-success mt-2">🛒 Add to Cart</button>
+            </form>
+
         </div>
     </div>
 

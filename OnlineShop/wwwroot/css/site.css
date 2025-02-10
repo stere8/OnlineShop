@@ -165,3 +165,41 @@ body {
 .btn-primary, .btn-warning {
     margin: 0 5px;
 }
+
+.product-card {
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.product-img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.related-products {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+}
+
+.related-product-card {
+    flex: 0 0 150px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.related-product-img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+}

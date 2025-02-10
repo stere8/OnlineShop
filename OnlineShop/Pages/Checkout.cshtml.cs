@@ -29,7 +29,7 @@ namespace OnlineShop.Pages
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                return Page();  // Stay on the checkout page if there's an error
+                return Page();
             }
         }
     }

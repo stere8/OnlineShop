@@ -43,6 +43,70 @@ namespace OnlineShop.Services
             return order;
         }
 
+        public async Task<Order> ProcessCheckout(string userId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var cart = await _context.Carts
+                    .Include(c => c.CartItems)
+                    .ThenInclude(ci => ci.Product)
+                    .FirstOrDefaultAsync(c => c.UserId == userId);
+
+                if (cart == null || !cart.CartItems.Any())
+                    throw new Exception("Cart is empty.");
+
+                var existingOrder = await _context.Orders
+                    .AnyAsync(o => o.UserId == userId && o.Status == "Pending");
+
+                if (existingOrder)
+                    throw new Exception("You already have a pending order.");
+
+                // Create order
+                var order = new Order
+                {
+                    UserId = userId,
+                    OrderDate = DateTime.UtcNow,
+                    Status = "Pending",
+                    TotalAmount = cart.CartItems.Sum(ci => ci.Quantity * ci.Product.Price),
+                    OrderItems = cart.CartItems.Select(ci => new OrderItem
+                    {
+                        ProductId = ci.ProductId,
+                        Quantity = ci.Quantity,
+                        Price = ci.Product.Price
+                    }).ToList()
+                };
+
+                _context.Orders.Add(order);
+
+                // Deduct product stock
+                foreach (var cartItem in cart.CartItems)
+                {
+                    var product = await _context.Products.FindAsync(cartItem.ProductId);
+                    if (product != null)
+                    {
+                        if (product.StockQuantity < cartItem.Quantity)
+                            throw new Exception($"Not enough stock for {product.Name}.");
+
+                        product.StockQuantity -= cartItem.Quantity; 
+                    }
+                }
+
+                // Remove cart items after checkout
+                _context.CartItems.RemoveRange(cart.CartItems);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return order;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
         public async Task ClearCartAsync(int cartId)
         {
             var cartItems = await _context.CartItems
