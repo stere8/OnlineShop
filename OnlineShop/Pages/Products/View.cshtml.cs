@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data;
 using OnlineShop.Models;
+using OnlineShop.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,10 +12,12 @@ namespace OnlineShop.Pages.Products
     public class ViewModel : PageModel
     {
         private readonly OnlineShopDbContext _context;
+        private readonly CartService _cart;
 
-        public ViewModel(OnlineShopDbContext context)
+        public ViewModel(OnlineShopDbContext context, CartService cart)
         {
             _context = context;
+            _cart = cart;
         }
 
         public Product Product { get; set; }
@@ -62,7 +65,7 @@ namespace OnlineShop.Pages.Products
 
             if (cart == null)
             {
-                cart = new Cart { UserId = userId, CartItems = new List<CartItem>() };
+                cart = await _cart.CreateCartAsync(userId);
                 _context.Carts.Add(cart);
             }
                 
@@ -83,7 +86,7 @@ namespace OnlineShop.Pages.Products
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToPage("Cart");
+            return RedirectToPage("");
         }
     }
 }
