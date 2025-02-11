@@ -6,6 +6,7 @@ using OnlineShop.Models;
 using OnlineShop.Services;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace OnlineShop.Pages.Products
 {
@@ -22,9 +23,12 @@ namespace OnlineShop.Pages.Products
 
         public Product Product { get; set; }
         public List<Product> RelatedProducts { get; set; }
+        public List<Review> Reviews { get; set; } // To hold the product's reviews
+        public bool CanSubmitReview { get; set; } // Check if the user can submit a review
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            // Fetch product and related products
             Product = await _context.Products
                 .Include(p => p.Category)
                 .FirstOrDefaultAsync(p => p.ProductId == id);
@@ -34,18 +38,36 @@ namespace OnlineShop.Pages.Products
                 return NotFound();
             }
 
-            // Fetch related products (same category, but different product)
             RelatedProducts = await _context.Products
                 .Where(p => p.CategoryId == Product.CategoryId && p.ProductId != id)
                 .Take(4)
                 .ToListAsync();
 
+            // Check if the user has purchased the product (for review submission)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var hasOrderedProduct = await _context.Orders
+                .Where(o => o.UserId == userId)
+                .AnyAsync(o => o.OrderItems.Any(oi => oi.ProductId == id));
+
+            CanSubmitReview = hasOrderedProduct;
+
+            // Fetch reviews with related entities
+            Reviews = await _context.Reviews
+                .Where(r => r.ProductId == id)
+                .OrderByDescending(r => r.CreatedDate)
+                .Take(5) // Limit to 5 recent reviews
+                .Include(r => r.User) // Include User details
+                .Include(r => r.Order) // Include Order details
+                .Include(r => r.Product) // Include Product details
+                .ToListAsync();
+
             return Page();
         }
 
+
         public async Task<IActionResult> OnPostAddToCartWithQuantityAsync(int productId, int quantity)
         {
-            if (quantity < 1) quantity = 1;  // Prevent invalid input
+            if (quantity < 1) quantity = 1;
 
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
@@ -68,7 +90,7 @@ namespace OnlineShop.Pages.Products
                 cart = await _cart.CreateCartAsync(userId);
                 _context.Carts.Add(cart);
             }
-                
+
             if (cart.CartItems == null)
             {
                 cart.CartItems = new List<CartItem>();
@@ -88,5 +110,33 @@ namespace OnlineShop.Pages.Products
             await _context.SaveChangesAsync();
             return RedirectToPage("");
         }
+
+        // Handle submitting a review
+        public async Task<IActionResult> OnPostSubmitReviewAsync(int productId, int rating, string comment)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var order = await _context.Orders
+                .Where(o => o.UserId == userId)
+                .FirstOrDefaultAsync(o => o.OrderItems.Any(oi => oi.ProductId == productId));
+
+            if (order == null)
+                return BadRequest("You must have ordered this product to leave a review.");
+
+            var review = new Review
+            {
+                ProductId = productId,
+                UserId = userId,
+                Rating = rating,
+                Comment = comment,
+                OrderId = order.OrderId,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            _context.Reviews.Add(review);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage(new { id = productId }); // Reload the page to show the new review
+        }
+
     }
 }

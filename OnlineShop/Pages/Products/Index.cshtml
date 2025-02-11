@@ -25,6 +25,8 @@
                         @product.Category.Name
                     </a>
                 </p>
+                <p><strong>Average Rating:</strong> @product.AverageRating</p> <!-- Display the average rating -->
+
                 <p><strong>Price:</strong> @product.Price.ToString("C")</p>
                 <a asp-page="./View" asp-route-id="@product.ProductId" class="btn btn-primary">View Details</a>
             </div>

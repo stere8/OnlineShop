@@ -14,5 +14,6 @@ namespace OnlineShop.Models
         public int CategoryId { get; set; }
         [ValidateNever]
         public Category Category { get; set; }
+        public double AverageRating { get; set; }
     }
 }

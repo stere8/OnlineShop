@@ -1,0 +1,39 @@
+﻿@page 
+@model OnlineShop.Pages.Products.ProductReviewsModel
+
+@{
+    ViewData["Title"] = "All Reviews for @Model.Product.Name";
+}
+
+<h2>All Reviews for @Model.Product.Name</h2>
+
+@if (Model.Reviews.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>By</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var review in Model.Reviews)
+            {
+                <tr>
+                    <td>@review.Rating</td>
+                    <td>@review.Comment</td>
+                    <td>@review.User.UserName</td>
+                    <td>@review.CreatedDate.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No reviews yet.</p>
+}
+
+<a asp-page="/Products/ProductDetails" asp-route-productId="@Model.Product.ProductId" class="btn btn-secondary">Back to Product</a>
