@@ -25,6 +25,8 @@ namespace OnlineShop.Pages.Products
         public List<Product> RelatedProducts { get; set; }
         public List<Review> Reviews { get; set; } // To hold the product's reviews
         public bool CanSubmitReview { get; set; } // Check if the user can submit a review
+        public bool IsProductInWishlist { get; set; }
+
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -51,6 +53,16 @@ namespace OnlineShop.Pages.Products
 
             CanSubmitReview = hasOrderedProduct;
 
+            var usersWishlist =await _context.Wishlists.FirstOrDefaultAsync(w => w.UserId == userId);
+
+            // Check if the product is in the user's wishlist
+            if(usersWishlist != null)
+            {
+                IsProductInWishlist = await _context.WishlistItems
+                       .AnyAsync(wi => wi.ProductId == id && wi.WishlistId == usersWishlist.WishlistId);
+            }
+
+
             // Fetch reviews with related entities
             Reviews = await _context.Reviews
                 .Where(r => r.ProductId == id)
@@ -64,6 +76,78 @@ namespace OnlineShop.Pages.Products
             return Page();
         }
 
+        public async Task<IActionResult> OnPostAddToWishlistAsync(int productId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Ensure the user is logged in
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToPage("/Account/Login");
+            }
+
+            var usersWishlist = await _context.Wishlists.FirstOrDefaultAsync(w => w.UserId == userId);
+
+            if (usersWishlist == null) 
+            {
+                usersWishlist = new Wishlist { UserId = userId };
+                _context.Wishlists.Add(usersWishlist);
+                await _context.SaveChangesAsync();
+            }
+
+            // Check if the product already exists in the user's wishlist
+            var existingWishlistItem = await _context.WishlistItems
+                .FirstOrDefaultAsync(wi => wi.ProductId == productId && wi.WishlistId == usersWishlist.WishlistId);
+
+            if (existingWishlistItem != null)
+            {
+                return RedirectToPage(); // Reload the page
+            }
+
+            // Add the product to the wishlist
+            var wishlistItem = new WishlistItem
+            {
+                ProductId = productId,
+                WishlistId = usersWishlist.WishlistId
+            };
+
+            _context.WishlistItems.Add(wishlistItem);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage(); // Reload the page to update button state
+        }
+
+        public async Task<IActionResult> OnPostRemoveFromWishlistAsync(int productId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Ensure the user is logged in
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToPage("/Account/Login");
+            }
+
+            // Find the user's wishlist
+            var wishlist = await _context.Wishlists
+                .FirstOrDefaultAsync(w => w.UserId == userId);
+
+            if (wishlist == null)
+            {
+                return RedirectToPage(); // If no wishlist found, simply reload
+            }
+
+            // Find the wishlist item to remove
+            var wishlistItem = await _context.WishlistItems
+                .FirstOrDefaultAsync(wi => wi.ProductId == productId && wi.WishlistId == wishlist.WishlistId);
+
+            if (wishlistItem != null)
+            {
+                _context.WishlistItems.Remove(wishlistItem);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToPage(); // Reload the page to update the button state
+        }
 
         public async Task<IActionResult> OnPostAddToCartWithQuantityAsync(int productId, int quantity)
         {

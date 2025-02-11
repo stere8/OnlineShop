@@ -19,7 +19,6 @@ namespace OnlineShop.Pages.Products
             _context = context;
         }
 
-        public Product Product { get; set; }
         public List<Review> Reviews { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int productId)

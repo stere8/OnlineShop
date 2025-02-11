@@ -2,10 +2,10 @@
 @model OnlineShop.Pages.Products.ProductReviewsModel
 
 @{
-    ViewData["Title"] = "All Reviews for @Model.Product.Name";
+    ViewData["Title"] = "All Reviews";
 }
 
-<h2>All Reviews for @Model.Product.Name</h2>
+<h2>All Reviews</h2>
 
 @if (Model.Reviews.Any())
 {
@@ -16,6 +16,7 @@
                 <th>Comment</th>
                 <th>By</th>
                 <th>Date</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -26,6 +27,9 @@
                     <td>@review.Comment</td>
                     <td>@review.User.UserName</td>
                     <td>@review.CreatedDate.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a asp-page="/Products/ProductDetails" asp-route-productId="@review.ProductId" class="btn btn-secondary">View Product</a>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -36,4 +40,3 @@ else
     <p>No reviews yet.</p>
 }
 
-<a asp-page="/Products/ProductDetails" asp-route-productId="@Model.Product.ProductId" class="btn btn-secondary">Back to Product</a>

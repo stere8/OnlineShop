@@ -27,6 +27,25 @@
                 <input type="number" name="quantity" id="quantity" min="1" max="@Model.Product.StockQuantity" value="1" class="form-control" required />
                 <button type="submit" class="btn btn-success mt-2">🛒 Add to Cart</button>
             </form>
+
+            <!-- Add/Remove Wishlist Button -->
+            @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+            {
+                if (Model.IsProductInWishlist)
+                {
+                    <form method="post" asp-page-handler="RemoveFromWishlist">
+                        <input type="hidden" name="ProductId" value="@Model.Product.ProductId" />
+                        <button type="submit" class="btn btn-danger mt-2">🗑️ Remove from Wishlist</button>
+                    </form>
+                }
+                else
+                {
+                    <form method="post" asp-page-handler="AddToWishlist">
+                        <input type="hidden" name="ProductId" value="@Model.Product.ProductId" />
+                        <button type="submit" class="btn btn-warning mt-2">❤️ Add to Wishlist</button>
+                    </form>
+                }
+            }
         </div>
     </div>
 
