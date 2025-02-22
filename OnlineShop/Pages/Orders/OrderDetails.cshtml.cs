@@ -11,6 +11,7 @@ namespace OnlineShop.Pages.Orders
     public class OrderDetailsModel : PageModel
     {
         private readonly OnlineShopDbContext _context;
+        public bool editable;
 
         public OrderDetailsModel(OnlineShopDbContext context)
         {
@@ -36,6 +37,8 @@ namespace OnlineShop.Pages.Orders
             {
                 return NotFound();
             }
+
+            editable = Order.OrderItems.Any();
 
             return Page();
         }

@@ -17,20 +17,24 @@
     <div class="row mt-5">
 
 
-        @foreach (var category in Model.Categories.Take(3))
+        @foreach (var category in Model.Categories)
         {
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <img src="@(string.IsNullOrEmpty(category.ImageUrl) ? "/images/noimage.png" : $"/images/{category.ImageUrl}")" class="card-img-top" alt="Electronics">
-                    <div class="card-body">
-                        <h5 class="card-title">@category.Name</h5>
-                        <p class="card-text">@(string.IsNullOrEmpty(category.Summary) ? "No descriptions available check out the products" : $"{category.Summary[0..150]}...")</p>
-                        <a asp-page="/Products/SearchResult" class="btn btn-primary" asp-route-categoryId="@category.CategoryId">
-                            Explore @category.Name
-                        </a>
+            @if (category.Products.Any())
+            {
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <img src="@(string.IsNullOrEmpty(category.ImageUrl) ? "/images/noimage.png" : $"/images/{category.ImageUrl}")" class="card-img-top" alt="Electronics">
+                        <div class="card-body">
+                            <h5 class="card-title">@category.Name</h5>
+                            <p class="card-text">@(string.IsNullOrEmpty(category.Summary) ? "No descriptions available check out the products" : $"{category.Summary[0..150]}...")</p>
+                            <a asp-page="/Products/SearchResult" class="btn btn-primary" asp-route-categoryId="@category.CategoryId">
+                                Explore @category.Name
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+            
         }
     </div>
 

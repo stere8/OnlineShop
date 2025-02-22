@@ -10,6 +10,6 @@ namespace OnlineShop.Models
         public string? Summary { get; set; }      // Add this
 
         [ValidateNever]  // Prevent validation on Products collection
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Product>? Products { get; set; }
     }
 }
