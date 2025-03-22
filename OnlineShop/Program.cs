@@ -12,6 +12,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<WishlistService>();
+builder.Services.AddScoped<LowStockService>();
 builder.Services.AddDbContext<OnlineShopDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OnlineShopDb")));
 

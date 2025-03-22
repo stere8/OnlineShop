@@ -3,20 +3,66 @@
 @{
     ViewData["Title"] = "Admin Dashboard";
 }
+<h2 class="mb-4">Admin Dashboard</h2>
 
-<h2>Admin Dashboard</h2>
-
-<div class="row">
-    <div class="col-md-3"><strong>Total Users:</strong> @Model.TotalUsers</div>
-    <div class="col-md-3"><strong>Total Products:</strong> @Model.TotalProducts</div>
-    <div class="col-md-3"><strong>Total Orders:</strong> @Model.TotalOrders</div>
-    <div class="col-md-3"><strong>Total Revenue:</strong> @Model.TotalRevenue.ToString("C")</div>
+<div class="row text-center">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-light shadow-sm">
+            <div class="card-body">
+                <h5>Total Users</h5>
+                <h3 class="text-primary">@Model.TotalUsers</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-light shadow-sm">
+            <div class="card-body">
+                <h5>Total Products</h5>
+                <h3 class="text-success">@Model.TotalProducts</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-light shadow-sm">
+            <div class="card-body">
+                <h5>Total Orders</h5>
+                <h3 class="text-info">@Model.TotalOrders</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-light shadow-sm">
+            <div class="card-body">
+                <h5>Total Revenue</h5>
+                <h3 class="text-warning">@Model.TotalRevenue.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
 </div>
 
-<h4 class="mt-4">Orders by Status</h4>
-<ul>
+<hr />
+
+<h4 class="mt-4">📦 Orders by Status</h4>
+<div class="mb-3">
     @foreach (var entry in Model.OrdersByStatus)
     {
-        <li><strong>@entry.Key:</strong> @entry.Value</li>
+        <span class="badge rounded-pill bg-secondary me-2">
+            @entry.Key: @entry.Value
+        </span>
     }
-</ul>
+</div>
+
+@if (Model.LowStockProducts?.Any() == true)
+{
+    <div class="alert alert-warning mt-4">
+        <h5><i class="bi bi-exclamation-triangle-fill text-danger"></i> Low Stock Alerts</h5>
+        <ul>
+            @foreach (var product in Model.LowStockProducts)
+            {
+                <li>
+                    <strong>@product.Name</strong> – Stock: @product.StockQuantity
+                </li>
+            }
+        </ul>
+    </div>
+}

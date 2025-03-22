@@ -46,6 +46,17 @@
                     </form>
                 }
             }
+            @if (User.IsInRole("Admin"))
+            {
+                <h4>Low Stock Threshold</h4>
+                <form method="post" asp-page-handler="SetThreshold">
+                    <input type="hidden" name="productId" value="@Model.Product.ProductId" />
+                    <label for="lowStockThreshold">Minimum Stock Threshold:</label>
+                    <input type="number" name="lowStockThreshold" id="lowStockThreshold" min="0" class="form-control" value="@Model.LowStockThreshold" required />
+                    <button type="submit" class="btn btn-danger mt-2">Save Threshold</button>
+                </form>
+            }
+
         </div>
     </div>
 

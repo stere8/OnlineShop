@@ -21,6 +21,8 @@ namespace OnlineShop.Pages.Admin
         public int TotalProducts { get; set; }
         public decimal TotalRevenue { get; set; }
         public Dictionary<string, int> OrdersByStatus { get; set; } = new();
+        public List<Product> LowStockProducts { get; set; } = new();
+
 
         public async Task OnGetAsync()
         {
@@ -33,6 +35,12 @@ namespace OnlineShop.Pages.Admin
                 .GroupBy(o => o.Status)
                 .Select(g => new { Status = g.Key, Count = g.Count() })
                 .ToDictionaryAsync(g => g.Status, g => g.Count);
+
+            // Low Stock Alerts
+            LowStockProducts = await _context.Products
+                .Where(p =>
+                    _context.LowStockConfigs.Any(c => c.ProductId == p.ProductId && p.StockQuantity < c.MinThreshold))
+                .ToListAsync();
         }
     }
 }

@@ -27,9 +27,16 @@ namespace OnlineShop.Pages.Products
         public bool CanSubmitReview { get; set; } // Check if the user can submit a review
         public bool IsProductInWishlist { get; set; }
 
+        [BindProperty]
+        public int? LowStockThreshold { get; set; }
+        public LowStockConfig ExistingLowStockConfig { get; set; }
+
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            ExistingLowStockConfig = await _context.LowStockConfigs.FirstOrDefaultAsync(l => l.ProductId == id);
+            LowStockThreshold = ExistingLowStockConfig?.MinThreshold;
+
             // Fetch product and related products
             Product = await _context.Products
                 .Include(p => p.Category)
@@ -75,6 +82,29 @@ namespace OnlineShop.Pages.Products
 
             return Page();
         }
+
+        public async Task<IActionResult> OnPostSetThresholdAsync(int productId, int lowStockThreshold)
+        {
+            var config = await _context.LowStockConfigs.FirstOrDefaultAsync(c => c.ProductId == productId);
+            if (config != null)
+            {
+                config.MinThreshold = lowStockThreshold;
+            }
+            else
+            {
+                config = new LowStockConfig
+                {
+                    ProductId = productId,
+                    MinThreshold = lowStockThreshold
+                };
+                _context.LowStockConfigs.Add(config);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToPage(new { id = productId });
+        }
+
+
 
         public async Task<IActionResult> OnPostAddToWishlistAsync(int productId)
         {
