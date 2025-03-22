@@ -24,7 +24,7 @@ namespace OnlineShop.Pages.Products
         public int TotalPages { get; set; }
         public int CurrentPage { get; set; }
 
-        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 6)
+        public async Task OnGetAsync(int pageNumber = 1, int pageSize = 75)
         {
             // Get all products
             var allProductsQuery = await _productService.GetAllProductsQueryable();

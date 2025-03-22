@@ -26,7 +26,7 @@ namespace OnlineShop.Pages.Products
         public int TotalPages { get; set; }
         public int CurrentPage { get; set; }
 
-        public async Task OnGetAsync(string? query, int? categoryId, int pageNumber = 1, int pageSize = 2)
+        public async Task OnGetAsync(string? query, int? categoryId, int pageNumber = 1, int pageSize = 5)
         {
             Query = query;
             SelectedCategoryId = categoryId;
