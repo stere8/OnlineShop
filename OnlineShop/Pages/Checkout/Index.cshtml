@@ -1,5 +1,5 @@
 ﻿@page
-@model CheckoutModel
+@model OnlineShop.Pages.Checkout.CheckoutModel
 @{
     ViewData["Title"] = "Checkout";
 }
@@ -11,38 +11,47 @@
     <p style="color: red;">@TempData["ErrorMessage"]</p>
 }
 
+@if (TempData["Message"] != null)
+{
+    <p style="color: green;">@TempData["Message"]</p>
+}
+
 <form method="post">
     <h3>Select Payment Method</h3>
 
     <div>
-        <input type="radio" id="card" name="PaymentMethod" value="Card" checked>
+        <input type="radio" asp-for="PaymentMethod" value="Card" checked />
         <label for="card">Credit/Debit Card</label>
     </div>
 
     <div>
-        <input type="radio" id="paypal" name="PaymentMethod" value="PayPal">
+        <input type="radio" asp-for="PaymentMethod" value="PayPal" />
         <label for="paypal">PayPal</label>
     </div>
 
     <div id="card-details">
         <h4>Enter Card Details</h4>
-        <label>Card Number:</label>
-        <input type="text" name="CardNumber" required>
 
-        <label>Expiry Date:</label>
-        <input type="text" name="ExpiryDate" placeholder="MM/YY" required>
+        <label asp-for="CardNumber"></label>
+        <input asp-for="CardNumber" class="form-control" required />
 
-        <label>CVV:</label>
-        <input type="text" name="CVV" required>
+        <label asp-for="ExpiryDate"></label>
+        <input asp-for="ExpiryDate" class="form-control" placeholder="MM/YY" required />
+
+        <label asp-for="CVV"></label>
+        <input asp-for="CVV" class="form-control" required />
     </div>
 
     <button type="submit">Proceed</button>
 </form>
 
-<script>
-    document.querySelectorAll('input[name="PaymentMethod"]').forEach((input) => {
-        input.addEventListener('change', function() {
-            document.getElementById('card-details').style.display = this.value === 'Card' ? 'block' : 'none';
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.querySelectorAll('input[name="PaymentMethod"]').forEach((input) => {
+            input.addEventListener('change', function () {
+                document.getElementById('card-details').style.display = this.value === 'Card' ? 'block' : 'none';
+            });
         });
-    });
-</script>
+    </script>
+}

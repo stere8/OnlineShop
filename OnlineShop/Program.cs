@@ -9,13 +9,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<WishlistService>();
 builder.Services.AddDbContext<OnlineShopDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OnlineShopDb")));
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
+{
+    options.Conventions.AuthorizeFolder("/Checkout");
+    options.Conventions.AuthorizeFolder("/Cart");
+    options.Conventions.AuthorizeFolder("/Orders");
+    options.Conventions.AuthorizeFolder("/Wishlist");
+
+    options.Conventions.AllowAnonymousToFolder("/Account");
+});
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {

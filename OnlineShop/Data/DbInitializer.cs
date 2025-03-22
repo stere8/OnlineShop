@@ -53,6 +53,43 @@ namespace OnlineShop.Data
                     await userManager.AddToRoleAsync(normalUser, "User");
                 }
             }
+
+
+            using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<OnlineShopDbContext>();
+
+            // Ensure category exists
+            if (!context.Categories.Any())
+            {
+                context.Categories.Add(new Category
+                {
+                    Name = "Default Category",
+                    Summary = "Auto-seeded category"
+                });
+                await context.SaveChangesAsync();
+            }
+
+            // Ensure product exists
+            if (!context.Products.Any())
+            {
+                var category = context.Categories.First();
+
+                context.Products.Add(new Product
+                {
+                    Name = "Test Product",
+                    Description = "Temporary test item for checkout flow",
+                    Price = 19.99m,
+                    StockQuantity = 10,
+                    CategoryId = category.CategoryId,
+                    ImageUrl = "/images/test-product.jpg"
+                });
+
+                await context.SaveChangesAsync();
+            }
+
+
         }
+
+
     }
 }
