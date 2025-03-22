@@ -34,8 +34,8 @@
                         <a asp-page="/Products/View" asp-route-id="@item.ProductId">@item.Product.Name</a> <!-- Make product name clickable -->
                     </td>
                     <td>@item.Quantity</td>
-                    <td>@item.Price.ToString()</td>
-                    <td>@(item.Quantity * item.Price).ToString("C")</td>
+                    <td>@($"{item.Price:C}")</td>
+                    <td>@($"{(item.Quantity * item.Price):C}")</td>
                 </tr>
             }
         </tbody>
