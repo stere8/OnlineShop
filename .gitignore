@@ -322,7 +322,7 @@ __pycache__/
 
 # Tabs Studio
 *.tss
-
+OnlineShop/wwwroot/images/
 # Telerik's JustMock configuration file
 *.jmconfig
 
