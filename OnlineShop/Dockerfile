@@ -4,10 +4,11 @@ EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["OnlineShop.csproj", "./"]
-RUN dotnet restore "./OnlineShop.csproj"
+COPY ["OnlineShop/OnlineShop.csproj", "OnlineShop/"]
+RUN dotnet restore "OnlineShop/OnlineShop.csproj"
 COPY . .
-RUN dotnet publish "./OnlineShop.csproj" -c Release -o /app/publish
+WORKDIR "/src/OnlineShop"
+RUN dotnet publish "OnlineShop.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
