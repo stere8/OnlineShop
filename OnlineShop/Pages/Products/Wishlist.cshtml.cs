@@ -24,6 +24,8 @@ namespace OnlineShop.Pages.Products
         public IList<Product> Products { get; set; }
         public ICollection<WishlistItem> WishlistItems { get; set; }
         public ICollection<Wishlist> AdminWishlists { get; set; }
+        public List<(Product Product, int Count)> TopWishlistedProducts { get; set; } = new();
+
         public bool IsAdmin { get; set; } // Check if the user is an Admin
 
 
@@ -71,6 +73,8 @@ namespace OnlineShop.Pages.Products
                 WishlistItems = wishlist.WishlistItems;
                 Products = await _context.Products.ToListAsync();
             }
+
+            TopWishlistedProducts = await _wishlistService.GetTopWishlistedProductsAsync(15);
 
             Products = await _context.Products.ToListAsync();
 

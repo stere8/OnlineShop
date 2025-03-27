@@ -3,17 +3,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data;
 using OnlineShop.Models;
+using OnlineShop.Services;
 
 namespace OnlineShop.Pages.Admin
 {
     [Authorize(Roles = "Admin")]
     public class DashboardModel : PageModel
     {
+        private readonly WishlistService _wishlistService;
         private readonly OnlineShopDbContext _context;
 
-        public DashboardModel(OnlineShopDbContext context)
+        public DashboardModel(OnlineShopDbContext context, WishlistService wishlistService)
         {
             _context = context;
+            _wishlistService = wishlistService;
         }
 
         public int TotalUsers { get; set; }
@@ -24,6 +27,7 @@ namespace OnlineShop.Pages.Admin
         public List<Product> LowStockProducts { get; set; } = new();
 
         public List<(Product Product, int TotalSold)> TopSellingProducts { get; set; } = new();
+        public List<(Product Product, int Count)> TopWishlistedProducts { get; set; } = new(); 
         public List<(Product Product, decimal TotalRevenue)> TopRevenueProducts { get; set; } = new();
         public List<(Category Category, int OrderCount)> MostOrderedCategories { get; set; } = new();
         public List<Order> RecentOrders { get; set; } = new();
@@ -61,7 +65,10 @@ namespace OnlineShop.Pages.Admin
                     ts => ts.ProductId,
                     p => p.ProductId,
                     (ts, p) => (p, ts.TotalSold))
-                .ToList();
+            .ToList();
+
+
+            TopWishlistedProducts = await _wishlistService.GetTopWishlistedProductsAsync(10);
 
             var topRevenue = await _context.OrderItems
                 .GroupBy(oi => oi.ProductId)

@@ -105,6 +105,17 @@
     }
 </ul>
 
+<h3 class="mt-5">Top Wishlisted Products</h3>
+<ul class="list-group mb-4">
+    @foreach (var item in Model.TopWishlistedProducts)
+    {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            @item.Product.Name
+            <span class="badge bg-info rounded-pill">@item.Count wishlists</span>
+        </li>
+    }
+</ul>
+
 <!-- Recent Orders -->
 <h3>🕒 Recent Orders</h3>
 <table class="table table-striped mb-4">

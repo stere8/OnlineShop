@@ -1,9 +1,13 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Data;
 using OnlineShop.Models;
 using OnlineShop.Services;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 public class IndexModel : PageModel
 {
@@ -19,9 +23,13 @@ public class IndexModel : PageModel
     public IList<Category> Categories { get; set; }
     public int CartItemCount { get; set; }
 
+    // Admin alert counts
+    public int LowStockCount { get; set; }
+    public int PendingOrdersCount { get; set; }
+
     public async Task OnGetAsync()
     {
-        // Check if the user is authenticated
+        // CART COUNT FOR AUTHENTICATED USERS
         if (User.Identity.IsAuthenticated)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -29,16 +37,28 @@ public class IndexModel : PageModel
                 .Include(c => c.CartItems)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
 
-            // Set the CartItemCount in ViewData to be accessed in the layout
             CartItemCount = cart?.CartItems?.Sum(ci => ci.Quantity) ?? 0;
             ViewData["CartItemCount"] = CartItemCount;
         }
 
-        // Get categories (existing logic)
+        // LOAD CATEGORIES
         var allCategories = await _categoryService.GetAllCategoriesAsync();
         Categories = allCategories
-            .OrderBy(c => c.CategoryId == 8 ? 1 : 0) // Sort CategoryId = 8 last
+            .OrderBy(c => c.CategoryId == 8 ? 1 : 0)
             .ThenBy(c => c.Name)
             .ToList();
+
+        // ONLY show admin alerts if user is Admin
+        if (User.IsInRole("Admin"))
+        {
+            // EXAMPLE: Low stock = any product with StockQuantity < 5
+            // Adjust logic for your threshold or a LowStockConfig table
+            LowStockCount = await _context.Products
+                .CountAsync(p => p.StockQuantity < 5);
+
+            // EXAMPLE: Count orders with status == "Pending"
+            PendingOrdersCount = await _context.Orders
+                .CountAsync(o => o.Status == "Pending");
+        }
     }
 }

@@ -64,5 +64,31 @@ namespace OnlineShop.Services
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<List<(Product Product, int Count)>> GetTopWishlistedProductsAsync(int topN)
+        {
+            // Group by ProductId in the WishlistItems table
+            var grouping = await _context.WishlistItems
+                .GroupBy(wi => wi.ProductId)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .Take(topN)
+                .ToListAsync();
+
+            // Join with Products table to get product details
+            var result = grouping
+                .Join(_context.Products,
+                      grouped => grouped.ProductId,
+                      product => product.ProductId,
+                      (grouped, product) => (product, grouped.Count))
+                .ToList();
+
+            return result;
+        }
+
     }
 }
